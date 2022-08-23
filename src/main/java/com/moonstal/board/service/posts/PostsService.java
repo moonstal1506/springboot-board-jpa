@@ -2,13 +2,16 @@ package com.moonstal.board.service.posts;
 
 import com.moonstal.board.domain.posts.Posts;
 import com.moonstal.board.domain.posts.PostsRepository;
+import com.moonstal.board.web.dto.PostsListResponseDto;
 import com.moonstal.board.web.dto.PostsResponseDto;
 import com.moonstal.board.web.dto.PostsSaveRequestDto;
 import com.moonstal.board.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,5 +38,12 @@ public class PostsService {
                 IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
